@@ -47,53 +47,21 @@ public class AlbumLoader extends CursorLoader {
     public static final String COLUMN_COUNT = "count";
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
 
-    private static final String[] COLUMNS = {
-            MediaStore.Files.FileColumns._ID,
-            COLUMN_BUCKET_ID,
-            COLUMN_BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.MIME_TYPE,
-            COLUMN_URI,
-            COLUMN_COUNT};
+    private static final String[] COLUMNS = {MediaStore.Files.FileColumns._ID, COLUMN_BUCKET_ID, COLUMN_BUCKET_DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE, COLUMN_URI, COLUMN_COUNT};
 
-    private static final String[] PROJECTION = {
-            MediaStore.Files.FileColumns._ID,
-            COLUMN_BUCKET_ID,
-            COLUMN_BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.MIME_TYPE,
-            "COUNT(*) AS " + COLUMN_COUNT};
+    private static final String[] PROJECTION = {MediaStore.Files.FileColumns._ID, COLUMN_BUCKET_ID, COLUMN_BUCKET_DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE, "COUNT(*) AS " + COLUMN_COUNT};
 
-    private static final String[] PROJECTION_29 = {
-            MediaStore.Files.FileColumns._ID,
-            COLUMN_BUCKET_ID,
-            COLUMN_BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.MIME_TYPE};
+    private static final String[] PROJECTION_29 = {MediaStore.Files.FileColumns._ID, COLUMN_BUCKET_ID, COLUMN_BUCKET_DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE};
 
     // === params for showSingleMediaType: false ===
-    private static final String SELECTION =
-            "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " OR "
-                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + ") GROUP BY (bucket_id";
-    private static final String SELECTION_29 =
-            "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " OR "
-                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
-    private static final String[] SELECTION_ARGS = {
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
-    };
+    private static final String SELECTION = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)" + " AND " + MediaStore.MediaColumns.SIZE + ">0" + ") GROUP BY (bucket_id";
+    private static final String SELECTION_29 = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)" + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+    private static final String[] SELECTION_ARGS = {String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE), String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),};
     // =============================================
 
     // === params for showSingleMediaType: true ===
-    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE =
-            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + ") GROUP BY (bucket_id";
-    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_29 =
-            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.SIZE + ">0" + ") GROUP BY (bucket_id";
+    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_29 = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.SIZE + ">0";
 
     private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
         return new String[]{String.valueOf(mediaType)};
@@ -101,15 +69,8 @@ public class AlbumLoader extends CursorLoader {
     // =============================================
 
     // === params for showSingleMediaType: true ===
-    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE =
-            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
-                    + ") GROUP BY (bucket_id";
-    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29 =
-            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?";
+    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.SIZE + ">0" + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?" + ") GROUP BY (bucket_id";
+    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29 = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.SIZE + ">0" + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?";
 
     private static String[] getSelectionArgsForSingleMediaGifType(int mediaType) {
         return new String[]{String.valueOf(mediaType), "image/gif"};
@@ -119,34 +80,21 @@ public class AlbumLoader extends CursorLoader {
     private static final String BUCKET_ORDER_BY = "datetaken DESC";
 
     private AlbumLoader(Context context, String selection, String[] selectionArgs) {
-        super(
-                context,
-                QUERY_URI,
-                beforeAndroidTen() ? PROJECTION : PROJECTION_29,
-                selection,
-                selectionArgs,
-                BUCKET_ORDER_BY
-        );
+        super(context, QUERY_URI, beforeAndroidTen() ? PROJECTION : PROJECTION_29, selection, selectionArgs, BUCKET_ORDER_BY);
     }
 
     public static CursorLoader newInstance(Context context) {
         String selection;
         String[] selectionArgs;
         if (SelectionSpec.getInstance().onlyShowGif()) {
-            selection = beforeAndroidTen()
-                    ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29;
-            selectionArgs = getSelectionArgsForSingleMediaGifType(
-                    MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+            selection = beforeAndroidTen() ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29;
+            selectionArgs = getSelectionArgsForSingleMediaGifType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
         } else if (SelectionSpec.getInstance().onlyShowImages()) {
-            selection = beforeAndroidTen()
-                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
-            selectionArgs = getSelectionArgsForSingleMediaType(
-                    MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+            selection = beforeAndroidTen() ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
+            selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
         } else if (SelectionSpec.getInstance().onlyShowVideos()) {
-            selection = beforeAndroidTen()
-                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
-            selectionArgs = getSelectionArgsForSingleMediaType(
-                    MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+            selection = beforeAndroidTen() ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
+            selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
         } else {
             selection = beforeAndroidTen() ? SELECTION : SELECTION_29;
             selectionArgs = SELECTION_ARGS;
@@ -165,21 +113,14 @@ public class AlbumLoader extends CursorLoader {
             MatrixCursor otherAlbums = new MatrixCursor(COLUMNS);
             if (albums != null) {
                 while (albums.moveToNext()) {
-                    long fileId = albums.getLong(
-                            albums.getColumnIndex(MediaStore.Files.FileColumns._ID));
-                    long bucketId = albums.getLong(
-                            albums.getColumnIndex(COLUMN_BUCKET_ID));
-                    String bucketDisplayName = albums.getString(
-                            albums.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
-                    String mimeType = albums.getString(
-                            albums.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
+                    long fileId = albums.getLong(albums.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                    long bucketId = albums.getLong(albums.getColumnIndex(COLUMN_BUCKET_ID));
+                    String bucketDisplayName = albums.getString(albums.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
+                    String mimeType = albums.getString(albums.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
                     Uri uri = getUri(albums);
                     int count = albums.getInt(albums.getColumnIndex(COLUMN_COUNT));
 
-                    otherAlbums.addRow(new String[]{
-                            Long.toString(fileId),
-                            Long.toString(bucketId), bucketDisplayName, mimeType, uri.toString(),
-                            String.valueOf(count)});
+                    otherAlbums.addRow(new String[]{Long.toString(fileId), Long.toString(bucketId), bucketDisplayName, mimeType, uri.toString(), String.valueOf(count)});
                     totalCount += count;
                 }
                 if (albums.moveToFirst()) {
@@ -187,10 +128,7 @@ public class AlbumLoader extends CursorLoader {
                 }
             }
 
-            allAlbum.addRow(new String[]{
-                    Album.ALBUM_ID_ALL, Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, null,
-                    allAlbumCoverUri == null ? null : allAlbumCoverUri.toString(),
-                    String.valueOf(totalCount)});
+            allAlbum.addRow(new String[]{Album.ALBUM_ID_ALL, Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, null, allAlbumCoverUri == null ? null : allAlbumCoverUri.toString(), String.valueOf(totalCount)});
 
             return new MergeCursor(new Cursor[]{allAlbum, otherAlbums});
         } else {
@@ -227,22 +165,13 @@ public class AlbumLoader extends CursorLoader {
                             continue;
                         }
 
-                        long fileId = albums.getLong(
-                                albums.getColumnIndex(MediaStore.Files.FileColumns._ID));
-                        String bucketDisplayName = albums.getString(
-                                albums.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
-                        String mimeType = albums.getString(
-                                albums.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
+                        long fileId = albums.getLong(albums.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                        String bucketDisplayName = albums.getString(albums.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
+                        String mimeType = albums.getString(albums.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
                         Uri uri = getUri(albums);
                         long count = countMap.get(bucketId);
 
-                        otherAlbums.addRow(new String[]{
-                                Long.toString(fileId),
-                                Long.toString(bucketId),
-                                bucketDisplayName,
-                                mimeType,
-                                uri.toString(),
-                                String.valueOf(count)});
+                        otherAlbums.addRow(new String[]{Long.toString(fileId), Long.toString(bucketId), bucketDisplayName, mimeType, uri.toString(), String.valueOf(count)});
                         done.add(bucketId);
 
                         totalCount += count;
@@ -250,11 +179,7 @@ public class AlbumLoader extends CursorLoader {
                 }
             }
 
-            allAlbum.addRow(new String[]{
-                    Album.ALBUM_ID_ALL,
-                    Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, null,
-                    allAlbumCoverUri == null ? null : allAlbumCoverUri.toString(),
-                    String.valueOf(totalCount)});
+            allAlbum.addRow(new String[]{Album.ALBUM_ID_ALL, Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, null, allAlbumCoverUri == null ? null : allAlbumCoverUri.toString(), String.valueOf(totalCount)});
 
             return new MergeCursor(new Cursor[]{allAlbum, otherAlbums});
         }
@@ -262,8 +187,7 @@ public class AlbumLoader extends CursorLoader {
 
     private static Uri getUri(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
-        String mimeType = cursor.getString(
-                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
+        String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
         Uri contentUri;
 
         if (MimeType.isImage(mimeType)) {

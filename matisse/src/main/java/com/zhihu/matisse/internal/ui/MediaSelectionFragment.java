@@ -18,13 +18,14 @@ package com.zhihu.matisse.internal.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Album;
@@ -89,7 +90,7 @@ public class MediaSelectionFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Album album = getArguments().getParcelable(EXTRA_ALBUM);
+        /*Album album = getArguments().getParcelable(EXTRA_ALBUM);
 
         mAdapter = new AlbumMediaAdapter(getContext(),
                 mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
@@ -109,7 +110,34 @@ public class MediaSelectionFragment extends Fragment implements
         int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
         mRecyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         mRecyclerView.setAdapter(mAdapter);
-        mAlbumMediaCollection.onCreate(getActivity(), this);
+        mAlbumMediaCollection.onCreate(requireActivity(), this);
+        mAlbumMediaCollection.load(album, selectionSpec.capture);*/
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Album album = getArguments() != null ? getArguments().getParcelable(EXTRA_ALBUM) : null;
+
+        mAdapter = new AlbumMediaAdapter(requireActivity(),
+                mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
+        mAdapter.registerCheckStateListener(this);
+        mAdapter.registerOnMediaClickListener(this);
+        mRecyclerView.setHasFixedSize(true);
+
+        int spanCount;
+        SelectionSpec selectionSpec = SelectionSpec.getInstance();
+        if (selectionSpec.gridExpectedSize > 0) {
+            spanCount = UIUtils.spanCount(requireActivity(), selectionSpec.gridExpectedSize);
+        } else {
+            spanCount = selectionSpec.spanCount;
+        }
+        mRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), spanCount));
+
+        int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
+        mRecyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
+        mRecyclerView.setAdapter(mAdapter);
+        mAlbumMediaCollection.onCreate(requireActivity(), this);
         mAlbumMediaCollection.load(album, selectionSpec.capture);
     }
 

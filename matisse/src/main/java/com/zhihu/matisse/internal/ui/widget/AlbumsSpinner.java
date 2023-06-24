@@ -20,12 +20,13 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.ListPopupWindow;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ListPopupWindow;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Album;
@@ -87,7 +88,6 @@ public class AlbumsSpinner {
                 mSelected.setVisibility(View.VISIBLE);
                 mSelected.setText(displayName);
             }
-
         }
     }
 
@@ -125,5 +125,4 @@ public class AlbumsSpinner {
     public void setPopupAnchorView(View view) {
         mListPopupWindow.setAnchorView(view);
     }
-
 }
